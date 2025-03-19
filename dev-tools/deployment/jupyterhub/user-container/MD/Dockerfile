@@ -1,7 +1,6 @@
 FROM jupyter/base-notebook:latest
 
-COPY data /tmp/default_data/
-COPY poc.ipynb settings.ini /tmp/default_configs/
+COPY data/ /tmp/default_data/
 
 COPY labconfig/jupyter_lab_config.py /jupyter_lab_config.py
 COPY labconfig/airavata_magics.py /airavata_magics.py
