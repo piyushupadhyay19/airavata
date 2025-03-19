@@ -7,9 +7,9 @@ c.JupyterHub.authenticator_class = GenericOAuthenticator
 c.GenericOAuthenticator.client_id = os.getenv('OAUTH_CLIENT_ID')
 c.GenericOAuthenticator.client_secret = os.getenv('OAUTH_CLIENT_SECRET')
 c.GenericOAuthenticator.oauth_callback_url = 'https://hub.cybershuttle.org/hub/oauth_callback'
-c.GenericOAuthenticator.authorize_url = 'https://auth.cybershuttle.org/realms/10000000/protocol/openid-connect/auth'
-c.GenericOAuthenticator.token_url = 'https://auth.cybershuttle.org/realms/10000000/protocol/openid-connect/token'
-c.GenericOAuthenticator.userdata_url = 'https://auth.cybershuttle.org/realms/10000000/protocol/openid-connect/userinfo'
+c.GenericOAuthenticator.authorize_url = 'https://auth.cybershuttle.org/realms/default/protocol/openid-connect/auth'
+c.GenericOAuthenticator.token_url = 'https://auth.cybershuttle.org/realms/default/protocol/openid-connect/token'
+c.GenericOAuthenticator.userdata_url = 'https://auth.cybershuttle.org/realms/default/protocol/openid-connect/userinfo'
 c.GenericOAuthenticator.scope = ['openid', 'profile', 'email']
 c.GenericOAuthenticator.username_claim = 'email'
 
@@ -20,18 +20,19 @@ c.GenericOAuthenticator.allow_all = True
 
 # Spawner Configuration
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
-c.DockerSpawner.image = os.environ.get('DOCKER_NOTEBOOK_IMAGE', 'jupyter/base-notebook:latest')
 c.DockerSpawner.notebook_dir = '/home/jovyan/work'
 c.DockerSpawner.volumes = {
     'jupyterhub-user-{username}': '/home/jovyan/work',
+    '/home/ubuntu/jupyterhub/mnt/shared_data': {'bind': '/home/jovyan/shared_data_tmp', 'mode': 'ro'}
 }
 c.DockerSpawner.environment = {
-    'CHOWN_HOME': 'yes',
-    'CHOWN_HOME_OPTS': '-R',
+    'CHOWN_HOME': 'no',
+    'CHOWN_HOME_OPTS': '',
 }
 c.DockerSpawner.extra_create_kwargs = {'user': 'root'}
 c.DockerSpawner.use_internal_ip = True
 c.DockerSpawner.network_name = os.getenv('DOCKER_NETWORK_NAME', 'jupyterhub_network')
+c.DockerSpawner.image = os.environ.get('DOCKER_NOTEBOOK_IMAGE', 'jupyter/base-notebook:latest')
 
 # Hub Configuration
 c.JupyterHub.hub_ip = '0.0.0.0'
@@ -69,3 +70,7 @@ c.JupyterHub.load_roles = [
 # SSL Termination
 c.JupyterHub.bind_url = 'http://:8000'
 c.JupyterHub.external_ssl = True
+
+# Custom templates - Login
+c.JupyterHub.template_paths = ['/srv/jupyterhub/custom_templates']
+c.OAuthenticator.login_service = "Sign in with Existing Institution Credentials"
