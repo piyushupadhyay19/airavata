@@ -66,7 +66,7 @@ class CustomDockerSpawner(DockerSpawner):
         # Overwrite self.volumes each time, so DockerSpawner creates/attaches them
         self.volumes = {
             f"jupyterhub-vol-{safe_user}-{safe_srv}-{safe_img}": "/home/jovyan/work",
-            "/home/ubuntu/jupyterhub/mnt/shared_data": {
+            f"/home/ubuntu/jupyterhub/mnt/shared_data_{safe_img}": {
                 "bind": "/home/jovyan/shared_data_tmp",
                 "mode": "ro"
             },
@@ -94,6 +94,7 @@ c.DockerSpawner.network_name = os.getenv('DOCKER_NETWORK_NAME', 'jupyterhub_netw
 c.JupyterHub.hub_ip = '0.0.0.0'
 c.JupyterHub.hub_port = 8081
 c.JupyterHub.hub_connect_ip = 'jupyterhub'
+c.JupyterHub.shutdown_on_logout = True
 
 # External URL
 c.JupyterHub.external_url = 'https://hub.cybershuttle.org'
